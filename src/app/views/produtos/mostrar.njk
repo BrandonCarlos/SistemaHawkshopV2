@@ -1,0 +1,72 @@
+{% extends "layout.njk" %}
+
+{% block content %}
+
+  <section class="produto-unico container">
+
+    <div class="galeria">
+      <div class="destaque">
+        {% if not arquivos[0] %}
+          <img src="http://placehold.it/500x500?text=PRODUTO SEM FOTO"/>
+        {% else %}
+          <img 
+            src="{{arquivos[0].src}}" 
+            alt="{{arquivos[0].nome}}"
+            onclick="Box.abrir()"
+            >
+        {% endif %}
+
+        <div class="box-target">
+          <img src="{{arquivos[0].src}}" alt="{{arquivos[0].nome}}">
+          <a 
+            href="#" 
+            class="box-fechar"
+            onclick="Box.fechar()"
+            >
+            <i class="material-icons">close</i>
+          </a>
+        </div>
+
+      </div>
+      <div class="galeria-preview">
+        {% for imagem in arquivos %}
+          <img src="{{ imagem.src }}" alt="{{ imagem.nome }}" {% if loop.index0 == 0 %} class="ativado" {% endif %} onclick="ImagemGaleria.setImagem(event)">
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="info">
+      <h1>{{produto.nome}}</h1>
+      <div class="publicar">
+        Publicado em
+        {{produto.publicar.day}}
+        ás
+        {{produto.publicar.hour}}
+      </div>
+
+      <div class="descricao">
+        {{produto.descricao}}
+      </div>
+
+      <div class="preco-comprar">
+        <div class="preco">
+          {{produto.preco}}
+          {%if produto.preco !== produto.antigoPreco%}
+            <span class="antigo">{{produto.antigoPreco}}</span>
+          {% endif %}
+        </div>
+        <div class="comprar">
+          {% if produto.status == 0 %}
+            <p class="invalido">Indisponivel</p>
+          {% elseif produto.quantidade == 0 %}
+            <p class="invalido">Fora de Estoque</p>
+          {% else %}
+            <button class="button">Comprar</button>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+{% endblock content %}

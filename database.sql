@@ -1,0 +1,90 @@
+DROP DATABASE IF EXISTS hawkshopdb;
+CREATE DATABASE hawkshopdb;
+
+CREATE TABLE "produtos" (
+  "id" SERIAL PRIMARY KEY,
+  "categoria_id" int NOT NULL,
+  "usuario_id" int,
+  "nome" text NOT NULL,
+  "descricao" text NOT NULL,
+  "antigo_preco" int,
+  "preco" int NOT NULL,
+  "quantidade" int DEFAULT 0,
+  "status" int DEFAULT 1,
+  "criado_em" timestamp DEFAULT 'now()',
+  "atualizado_em" timestamp DEFAULT 'now()'
+);
+
+CREATE TABLE "categorias" (
+  "id" SERIAL PRIMARY KEY,
+  "nome" text NOT NULL
+);
+
+INSERT INTO categorias(nome) VALUES('comida');
+INSERT INTO categorias(nome) VALUES('eletrônicos');
+INSERT INTO categorias(nome) VALUES('automóveis');
+
+CREATE TABLE "arquivos" (
+  "id" SERIAL PRIMARY KEY,
+  "nome" text,
+  "caminho" text NOT NULL,
+  "produto_id" int
+);
+
+ALTER TABLE "produtos" ADD FOREIGN KEY ("categoria_id") REFERENCES "categorias" ("id");
+
+ALTER TABLE "arquivos" ADD FOREIGN KEY ("produto_id") REFERENCES "produtos" ("id");
+
+CREATE TABLE "usuarios" (
+  "id" SERIAL PRIMARY KEY,
+  "nome" text NOT NULL,
+  "email" text UNIQUE NOT NULL,
+  "senha" TEXT NOT NULL,
+  "cpf_cnpj" text UNIQUE NOT NULL,
+  "cep" text,
+  "endereco" text,
+  "criado_em" timestamp DEFAULT 'now()',
+  "atualizado_em" timestamp DEFAULT 'now()'
+);
+
+--  FOREIGN KEY
+
+ALTER TABLE "produtos" ADD FOREIGN KEY ("usuario_id") REFERENCES "usuarios" ("id");
+
+-- CRIAR PROCEDURE
+
+CREATE FUNCTION trigger_set_timestamp()
+RETURNS TRIGGER AS $$
+BEGIN 
+  NEW.atualizado_em = NOW();
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- auto updated_at products AUTO ATUALIZAÇÃO DE PRODUTOS
+
+CREATE TRIGGER trigger_set_timestamp
+BEFORE UPDATE ON produtos
+FOR EACH ROW
+EXECUTE PROCEDURE trigger_set_timestamp();
+
+
+-- auto updated_at usuarios AUTO ATUALIZAÇÃO DE USUARIOS
+
+CREATE TRIGGER trigger_set_timestamp
+BEFORE UPDATE ON usuarios
+FOR EACH ROW
+EXECUTE PROCEDURE trigger_set_timestamp();
+
+
+CREATE TABLE "session" (--session
+  "sid" varchar NOT NULL COLLATE "default",
+	"sess" json NOT NULL,
+	"expire" timestamp(6) NOT NULL
+)
+WITH (OIDS=FALSE);
+
+ALTER TABLE "session" ADD CONSTRAINT "session_pkey" PRIMARY KEY ("sid") NOT DEFERRABLE INITIALLY IMMEDIATE;
+
+CREATE INDEX "IDX_session_expire" ON "session" ("expire");   
+
