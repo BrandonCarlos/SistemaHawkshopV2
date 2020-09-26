@@ -27,7 +27,7 @@ module.exports = {
     data.preco = data.preco.replace(/\D/g, "") //D = somente números,  g = global, o usuário só podera digitar NÚMEROS
     const values = [
       data.categoria_id,
-      data.usuario_id || 30,
+      data.usuario_id,
       data.nome,
       data.descricao,
       data.antigo_preco || data.preco,
@@ -47,19 +47,17 @@ module.exports = {
     const query = `
       UPDATE produtos SET
         categoria_id=($1),
-        usuario_id=($2),
-        nome=($3),
-        descricao=($4),
-        antigo_preco=($5),
-        preco=($6),
-        quantidade=($7),
-        status=($8)
-      WHERE id = $9
+        nome=($2),
+        descricao=($3),
+        antigo_preco=($4),
+        preco=($5),
+        quantidade=($6),
+        status=($7)
+      WHERE id = $8
     `
 
     const values = [
       data.categoria_id,
-      data.usuario_id,
       data.nome,
       data.descricao,
       data.antigo_preco,

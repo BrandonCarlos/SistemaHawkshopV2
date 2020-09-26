@@ -18,10 +18,10 @@ routes.post('/logout', SessionController.logout)
 
 
 //reset password / esqueceu senha
-//routes.get('/forgot-password', SessaoController.forgotForm)
-//routes.get('/resetar-senha', SessaoController.resetarForm)
-//routes.post('/forgot-password', SessaoController.forgot)
-//routes.post('/resetar-senha', SessaoController.resetar)
+routes.get('/forgot-password', SessionController.forgotForm)
+routes.get('/password-reset', SessionController.resetForm)
+routes.post('/forgot-password', SessionValidar.forgot, SessionController.forgot)
+routes.post('/password-reset', SessionValidar.reset, SessionController.reset)
 
 
 //registro de usuario
@@ -30,7 +30,7 @@ routes.post('/registrar', UsuarioValidar.salvar, UsuarioController.salvar)//post
 
 routes.get('/', soUsuarios, UsuarioValidar.mostrar, UsuarioController.mostrar)//show
 routes.put('/', UsuarioValidar.atualizar, UsuarioController.atualizar)//show
-//routes.delete('/', UserController.deletar)//show
+routes.delete('/', UsuarioController.deletar)//show
 
 
 

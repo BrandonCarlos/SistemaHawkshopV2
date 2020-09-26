@@ -86,5 +86,20 @@ WITH (OIDS=FALSE);
 
 ALTER TABLE "session" ADD CONSTRAINT "session_pkey" PRIMARY KEY ("sid") NOT DEFERRABLE INITIALLY IMMEDIATE;
 
-CREATE INDEX "IDX_session_expire" ON "session" ("expire");   
+CREATE INDEX "IDX_session_expire" ON "session" ("expire");  
+
+-- Efeito cascata
+ALTER TABLE "produtos"
+DROP CONSTRAINT produtos_usuario_id_fkey,
+ADD CONSTRAINT produtos_usuario_id_fkey
+FOREIGN KEY ("usuario_id")
+REFERENCES "usuarios"("id")
+ON DELETE CASCADE;
+
+ALTER TABLE "arquivos"
+DROP CONSTRAINT arquivos_produto_id_fkey,
+ADD CONSTRAINT arquivos_produto_id_fkey
+FOREIGN KEY ("produto_id")
+REFERENCES "produtos" ("id")
+ON DELETE CASCADE;
 

@@ -54,5 +54,22 @@ module.exports = {
     // se preencheu a senha
 
     // se a senha são iguais
+  },
+  async deletar(req, res) {
+    try {
+      await Usuario.deletar(req.body.id)
+      req.session.destroy()
+
+      return res.render("session/login", {
+        success: "Conta deletada com sucesso!"
+      })
+
+    }catch(err) {
+      console.error(err)
+      return res.render("usuario/index", {
+        usuario: req.body,
+        erro: "Erro ao tentar deletar sua conta!"
+      })
+    }
   }
 }
